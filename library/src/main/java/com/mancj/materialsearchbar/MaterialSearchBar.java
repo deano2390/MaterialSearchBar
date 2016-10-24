@@ -9,10 +9,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,7 +53,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
 
     private int searchIconRes;
 
-    private CharSequence hint;
+    private CharSequence activeHint, startingHint;
     private int maxSuggestionCount;
     private boolean speechMode;
 
@@ -83,7 +81,8 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
 
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.MaterialSearchBar);
         searchIconRes = array.getResourceId(R.styleable.MaterialSearchBar_searchIconDrawable, -1);
-        hint = array.getString(R.styleable.MaterialSearchBar_hint);
+        startingHint = array.getString(R.styleable.MaterialSearchBar_startingHint);
+        activeHint = array.getString(R.styleable.MaterialSearchBar_activeHint);
         maxSuggestionCount = array.getInt(R.styleable.MaterialSearchBar_maxSuggestionsCount, 3);
         speechMode = array.getBoolean(R.styleable.MaterialSearchBar_speechMode, false);
 
@@ -122,8 +121,12 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
             searchIconRes = R.drawable.ic_magnify_black_48dp;
         setSpeechMode(speechMode);
 
-        if (hint != null)
-            searchEdit.setHint(hint);
+        if (activeHint != null)
+            searchEdit.setHint(activeHint);
+
+        if(tvStartHint != null){
+            tvStartHint.setText(startingHint);
+        }
         setupTextColors();
 
     }
@@ -206,12 +209,12 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     }
 
     /**
-     * Sets search bar hint
-     * @param hint
+     * Sets search bar activeHint
+     * @param activeHint
      */
-    public void setHint(CharSequence hint) {
-        this.hint = hint;
-        searchEdit.setHint(hint);
+    public void setActiveHint(CharSequence activeHint) {
+        this.activeHint = activeHint;
+        searchEdit.setHint(activeHint);
     }
 
     /**
@@ -294,8 +297,8 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     }
 
     /**
-     * Set text input hint color
-     * @param hintColor text hint color
+     * Set text input activeHint color
+     * @param hintColor text activeHint color
      */
     public void setTextHintColor(int hintColor) {
         this.hintColor = hintColor;
@@ -446,7 +449,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         savedState.searchIconRes = searchIconRes;
         savedState.suggestions = getLastSuggestions();
         savedState.maxSuggestions = maxSuggestionCount;
-        if (hint != null) savedState.hint = hint.toString();
+        if (activeHint != null) savedState.hint = activeHint.toString();
         return savedState;
     }
 
@@ -467,7 +470,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
 //        speechMode = savedState.speechMode == VIEW_VISIBLE;
 //        navIconResId = savedState.navIconResId;
 //        searchIconRes = savedState.searchIconRes;
-//        hint = savedState.hint;
+//        activeHint = savedState.activeHint;
 //        maxSuggestionCount = savedState.maxSuggestions > 0 ? maxSuggestionCount  = savedState.maxSuggestions : maxSuggestionCount;
 //        postSetup();
     }

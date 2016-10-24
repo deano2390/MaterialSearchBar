@@ -42,7 +42,6 @@
                     android:layout_marginRight="8dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:hint="@string/action_search"
                     android:imeOptions="flagNoExtractUi|actionSearch"
                     android:singleLine="true"
                     android:textAppearance="?android:attr/textAppearanceMedium"
@@ -92,7 +91,6 @@
                     android:id="@+id/mt_search"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-
                     android:clickable="false"
                     android:padding="13dp"
                     android:src="@drawable/ic_magnify_black_48dp"
@@ -101,8 +99,9 @@
                 <TextView
                     android:id="@+id/tv_start_hint"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+
                     android:text="Search"
                     android:textSize="18dp" />
 

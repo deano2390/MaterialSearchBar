@@ -37,7 +37,7 @@ then add SearchBar to your activity:
 ```xml
 <com.mancj.materialsearchbar.MaterialSearchBar
     app:speechMode="true"
-    app:hint="Custom hint"
+    app:activeHint="Custom activeHint"
     app:maxSuggestionsCount="10"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -50,13 +50,13 @@ then add SearchBar to your activity:
 
 | attribute           | description                                                                           |
 |---------------------|---------------------------------------------------------------------------------------|
-| hint                | Set custom prompt in the search box                                                   |
+| activeHint                | Set custom prompt in the search box                                                   |
 | speechMode          | If set to true, microphone icon will display instead of the search icon.              |
 | maxSuggestionsCount | Specifies the maximum number of search queries stored until the activity is destroyed |
 | searchIconDrawable  | Set search icon drawable resource                                                     |
 | navIconDrawable     | Set navigation icon drawable resource                                                 |
 | textColor           | Change text color                                                                     |
-| hintColor           | Change text hint color                                                                |
+| hintColor           | Change text activeHint color                                                                |
 | navIconEnabled      | Set navigation icon enabled                                                           |
 
 
@@ -68,7 +68,7 @@ then add SearchBar to your activity:
  - `isSearchEnabled()`
  - `setText(String text)`
  - `getText()`
- - `setHint(CharSequence hint)`
+ - `setHint(CharSequence activeHint)`
  - `setNavButtonEnabled(boolean navButtonEnabled)`
  - `setSpeechMode(boolean speechMode)`
  - `setOnSearchActionListener(OnSearchActionListener onSearchActionListener)`
@@ -101,7 +101,7 @@ protected void onCreate(Bundle savedInstanceState) {
     setContentView(R.layout.activity_main);
 
     searchBar = (MaterialSearchBar) findViewById(R.id.searchBar);
-    searchBar.setHint("Custom hint");
+    searchBar.setHint("Custom activeHint");
     searchBar.setSpeechMode(true);
     //enable searchbar callbacks
     searchBar.setOnSearchActionListener(this);
