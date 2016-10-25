@@ -11,11 +11,10 @@
 
     <com.mancj.materialsearchbar.MaterialSearchBar
         android:id="@+id/searchBar"
-        app:startingHint="search your mates"
-        app:activeHint="enter a name"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        android:layout_height="match_parent"
+        app:activeHint="enter a name"
+        app:startingHint="search your mates" />
 
 
 </LinearLayout>
