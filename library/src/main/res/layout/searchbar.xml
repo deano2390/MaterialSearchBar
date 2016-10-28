@@ -29,8 +29,7 @@
                     android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:padding="13dp"
-                    android:src="@drawable/ic_arrow_left_black_48dp"
-                    android:tint="@color/material_grey_600"
+                    android:src="@drawable/ic_back_green"
                     android:visibility="visible" />
 
                 <EditText
@@ -42,7 +41,8 @@
                     android:imeOptions="flagNoExtractUi|actionSearch"
                     android:singleLine="true"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textSize="18dp"
+                    android:textColorHint="#66000000"
+                    android:textSize="14dp"
                     android:visibility="visible" />
 
                 <ImageView
@@ -98,9 +98,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-
                     android:text="Search"
-                    android:textSize="18dp" />
+                    android:textColor="#66000000"
+                    android:textSize="14dp" />
 
             </LinearLayout>
 

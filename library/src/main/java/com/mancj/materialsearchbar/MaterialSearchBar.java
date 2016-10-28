@@ -43,7 +43,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     private LinearLayout inputContainer;
     private ImageView arrowIcon;
     private EditText searchEdit;
-
+    private View clearIcon;
 
     private OnSearchActionListener onSearchActionListener;
     private boolean searchEnabled;
@@ -107,7 +107,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         arrowIcon = (ImageView) findViewById(R.id.mt_arrow);
         searchEdit = (EditText) findViewById(R.id.mt_editText);
         inputContainer = (LinearLayout) findViewById(R.id.inputContainer);
-        findViewById(R.id.mt_clear).setOnClickListener(this);
+        clearIcon = findViewById(R.id.mt_clear);
 
         setOnClickListener(this);
         arrowIcon.setOnClickListener(this);
@@ -115,6 +115,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         searchEdit.setOnFocusChangeListener(this);
         searchEdit.setOnEditorActionListener(this);
         searchEdit.addTextChangedListener(this);
+        clearIcon.setOnClickListener(this);
 
         postSetup();
     }
@@ -183,6 +184,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
             onSearchActionListener.onSearchStateChanged(true);
         }
         startContainer.startAnimation(left_out);
+        clearIcon.setVisibility(GONE);
     }
 
     private void animateLastRequests(int from, int to) {
@@ -438,8 +440,18 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (listenerExists()){
-            onSearchActionListener.onSearchTextChanged(s);
+        if (searchEnabled) {
+            if (listenerExists()) {
+                onSearchActionListener.onSearchTextChanged(s);
+            }
+
+            if (s.length() > 0) {
+                clearIcon.setVisibility(VISIBLE);
+                animateLastRequests(getListHeight(false), 0);
+            } else {
+                clearIcon.setVisibility(GONE);
+                animateLastRequests(0, getListHeight(false));
+            }
         }
     }
 

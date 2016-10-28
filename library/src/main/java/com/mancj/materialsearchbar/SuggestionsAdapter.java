@@ -87,7 +87,7 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
         public SuggestionHolder(final View itemView) {
             super(itemView);
             text = (TextView) itemView.findViewById(R.id.text);
-            iv_delete = (ImageView) itemView.findViewById(R.id.iv_delete);
+            //iv_delete = (ImageView) itemView.findViewById(R.id.iv_delete);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -95,13 +95,13 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
                     listener.OnItemClickListener(getAdapterPosition(),v);
                 }
             });
-            iv_delete.setOnClickListener(new View.OnClickListener() {
+            /*iv_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     v.setTag(suggestions.get(getAdapterPosition()));
                     listener.OnItemDeleteListener(getAdapterPosition(),v);
                 }
-            });
+            });*/
         }
     }
 

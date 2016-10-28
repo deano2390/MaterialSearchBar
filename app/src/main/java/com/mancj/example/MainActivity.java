@@ -46,4 +46,9 @@ public class MainActivity extends AppCompatActivity implements MaterialSearchBar
     public void onButtonClicked(int buttonCode) {
 
     }
+
+    @Override
+    public void onSearchTextChanged(CharSequence text) {
+
+    }
 }
