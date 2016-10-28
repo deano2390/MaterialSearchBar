@@ -41,8 +41,8 @@
                     android:imeOptions="flagNoExtractUi|actionSearch"
                     android:singleLine="true"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColorHint="#66000000"
-                    android:textSize="14dp"
+                    android:textColorHint="@color/msb_grey_text"
+                    android:textSize="@dimen/msb_font_size"
                     android:visibility="visible" />
 
                 <ImageView
@@ -99,8 +99,8 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="Search"
-                    android:textColor="#66000000"
-                    android:textSize="14dp" />
+                    android:textColor="@color/msb_grey_text"
+                    android:textSize="@dimen/msb_font_size" />
 
             </LinearLayout>
 

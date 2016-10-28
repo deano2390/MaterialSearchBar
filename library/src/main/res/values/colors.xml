@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="transparentBlack">#96000000</color>
+    <color name="msb_grey_text">#66000000</color>
 </resources>
