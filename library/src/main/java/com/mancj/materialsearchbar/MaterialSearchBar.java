@@ -227,6 +227,24 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     }
 
     /**
+     * Sets search bar startingHint
+     *
+     * @param startingHint
+     */
+    public void setStartingHint(CharSequence startingHint) {
+        this.startingHint = startingHint;
+        tvStartHint.setText(startingHint);
+    }
+
+    public CharSequence getActiveHint() {
+        return activeHint;
+    }
+
+    public CharSequence getStartingHint() {
+        return startingHint;
+    }
+
+    /**
      * sets the speechMode for the search bar.
      * If set to true, microphone icon will display instead of the search icon.
      * Also clicking on this icon will trigger the callback method onButtonClicked()
