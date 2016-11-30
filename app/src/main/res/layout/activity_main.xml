@@ -11,9 +11,10 @@
         android:id="@+id/searchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#fff"
         app:activeHint="enter a name"
         app:cardMode="false"
-        android:background="#fff"
+        app:lockedMode="false"
         app:startingHint="search your mates" />
 
 

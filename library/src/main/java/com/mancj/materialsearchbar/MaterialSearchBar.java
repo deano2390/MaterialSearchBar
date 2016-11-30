@@ -2,6 +2,7 @@ package com.mancj.materialsearchbar;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
@@ -62,6 +63,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     private int textColor;
     private int hintColor;
     private boolean cardMode;
+    private boolean lockedMode;
 
     public MaterialSearchBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -88,14 +90,15 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         maxSuggestionCount = array.getInt(R.styleable.MaterialSearchBar_maxSuggestionsCount, 3);
         speechMode = array.getBoolean(R.styleable.MaterialSearchBar_speechMode, false);
         cardMode = array.getBoolean(R.styleable.MaterialSearchBar_cardMode, true);
+        lockedMode = array.getBoolean(R.styleable.MaterialSearchBar_lockedMode, false);
         hintColor = array.getColor(R.styleable.MaterialSearchBar_hintColor, -1);
         textColor = array.getColor(R.styleable.MaterialSearchBar_textColor, -1);
 
         array.recycle();
 
-        if(cardMode){
+        if (cardMode) {
             inflate(getContext(), R.layout.msb_searchbar_card, this);
-        }else{
+        } else {
             inflate(getContext(), R.layout.msb_searchbar_non_card, this);
         }
 
@@ -141,6 +144,10 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         }
         setupTextColors();
 
+        if (lockedMode) {
+            enableSearch(false);
+        }
+
     }
 
     void setupTextColors() {
@@ -179,18 +186,26 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     /**
      * Shows search input and close arrow
      */
-    public void enableSearch() {
+    public void enableSearch(boolean animate) {
         adapter.notifyDataSetChanged();
         searchEnabled = true;
-        Animation left_in = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_left);
-        Animation left_out = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out_left);
-        left_in.setAnimationListener(this);
+
         inputContainer.setVisibility(VISIBLE);
-        inputContainer.startAnimation(left_in);
+
+        if (animate) {
+            Animation left_in = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in_left);
+            Animation left_out = AnimationUtils.loadAnimation(getContext(), R.anim.fade_out_left);
+            left_in.setAnimationListener(this);
+            inputContainer.startAnimation(left_in);
+            startContainer.startAnimation(left_out);
+        } else {
+            startContainer.setVisibility(GONE);
+        }
+
         if (listenerExists()) {
             onSearchActionListener.onSearchStateChanged(true);
         }
-        startContainer.startAnimation(left_out);
+
         clearIcon.setVisibility(GONE);
     }
 
@@ -374,10 +389,16 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         int id = v.getId();
         if (id == getId()) {
             if (!searchEnabled) {
-                enableSearch();
+                enableSearch(true);
             }
         } else if (id == R.id.mt_arrow) {
-            disableSearch();
+            if (lockedMode) {
+                if (getContext() instanceof Activity) {
+                    ((Activity) getContext()).onBackPressed();
+                }
+            } else {
+                disableSearch();
+            }
         } else if (id == R.id.mt_search) {
             if (listenerExists())
                 onSearchActionListener.onButtonClicked(BUTTON_SPEECH);
@@ -602,7 +623,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && searchEnabled) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && searchEnabled && !lockedMode) {
             animateLastRequests(getListHeight(false), 0);
             disableSearch();
             return true;

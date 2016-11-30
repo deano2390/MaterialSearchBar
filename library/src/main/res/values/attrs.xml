@@ -9,5 +9,6 @@
         <attr name="hintColor" format="color" />
         <attr name="textColor" format="color" />
         <attr name="cardMode" format="boolean" />
+        <attr name="lockedMode" format="boolean" />
     </declare-styleable>
 </resources>
