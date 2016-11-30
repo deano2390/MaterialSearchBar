@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardElevation="4dp">
+
+        <include layout="@layout/msb_inner_view" />
+
+    </android.support.v7.widget.CardView>
+</merge>

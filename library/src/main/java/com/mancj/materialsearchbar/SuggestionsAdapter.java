@@ -58,7 +58,7 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
 
     @Override
     public SuggestionHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_last_request, parent, false);
+        View view = inflater.inflate(R.layout.msb_item_last_request, parent, false);
         return new SuggestionHolder(view);
     }
 

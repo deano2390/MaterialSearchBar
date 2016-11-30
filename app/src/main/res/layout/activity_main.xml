@@ -4,20 +4,22 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@color/cardview_dark_background"
     android:orientation="vertical">
 
     <com.mancj.materialsearchbar.MaterialSearchBar
         android:id="@+id/searchBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:activeHint="enter a name"
+        app:cardMode="false"
+        android:background="#fff"
         app:startingHint="search your mates" />
 
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_weight="1"
-        android:layout_height="0dp"></FrameLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1"></FrameLayout>
 
 </LinearLayout>

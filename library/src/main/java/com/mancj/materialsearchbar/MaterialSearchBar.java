@@ -61,6 +61,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
 
     private int textColor;
     private int hintColor;
+    private boolean cardMode;
 
     public MaterialSearchBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -79,7 +80,6 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     }
 
     private void init(AttributeSet attrs) {
-        inflate(getContext(), R.layout.searchbar, this);
 
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.MaterialSearchBar);
         searchIconRes = array.getResourceId(R.styleable.MaterialSearchBar_searchIconDrawable, -1);
@@ -87,9 +87,17 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         activeHint = array.getString(R.styleable.MaterialSearchBar_activeHint);
         maxSuggestionCount = array.getInt(R.styleable.MaterialSearchBar_maxSuggestionsCount, 3);
         speechMode = array.getBoolean(R.styleable.MaterialSearchBar_speechMode, false);
-
+        cardMode = array.getBoolean(R.styleable.MaterialSearchBar_cardMode, true);
         hintColor = array.getColor(R.styleable.MaterialSearchBar_hintColor, -1);
         textColor = array.getColor(R.styleable.MaterialSearchBar_textColor, -1);
+
+        array.recycle();
+
+        if(cardMode){
+            inflate(getContext(), R.layout.msb_searchbar_card, this);
+        }else{
+            inflate(getContext(), R.layout.msb_searchbar_non_card, this);
+        }
 
         destiny = getResources().getDisplayMetrics().density;
         adapter = new SuggestionsAdapter(LayoutInflater.from(getContext()));
@@ -99,7 +107,6 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        array.recycle();
 
         startContainer = findViewById(R.id.start_container);
         tvStartHint = (TextView) findViewById(R.id.tv_start_hint);
