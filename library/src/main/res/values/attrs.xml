@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="MaterialSearchBar">
         <attr name="searchIconDrawable" format="reference" />
+        <attr name="activeIconDrawable" format="reference" />
         <attr name="startingHint" format="string" />
         <attr name="activeHint" format="string" />
         <attr name="maxSuggestionsCount" format="string" />
@@ -10,5 +11,6 @@
         <attr name="textColor" format="color" />
         <attr name="cardMode" format="boolean" />
         <attr name="lockedMode" format="boolean" />
+
     </declare-styleable>
 </resources>

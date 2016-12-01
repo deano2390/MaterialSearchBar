@@ -13,8 +13,9 @@
         android:layout_height="wrap_content"
         android:background="#fff"
         app:activeHint="enter a name"
+        app:activeIconDrawable="@drawable/ic_magnify_black_48dp"
         app:cardMode="false"
-        app:lockedMode="false"
+        app:lockedMode="true"
         app:startingHint="search your mates" />
 
 

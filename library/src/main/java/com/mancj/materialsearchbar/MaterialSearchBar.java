@@ -38,11 +38,11 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     public static final int BUTTON_SPEECH = 1;
 
     private View startContainer;
-    private ImageView searchIcon;
+    private ImageView startingIcon;
     private TextView tvStartHint;
 
     private LinearLayout inputContainer;
-    private ImageView arrowIcon;
+    private ImageView activeIcon;
     private EditText searchEdit;
     private View clearIcon;
 
@@ -54,7 +54,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     private SuggestionsAdapter adapter;
     private float destiny;
 
-    private int searchIconRes;
+    private int searchIconResId, activeIconResId;
 
     private CharSequence activeHint, startingHint;
     private int maxSuggestionCount;
@@ -84,7 +84,8 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     private void init(AttributeSet attrs) {
 
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.MaterialSearchBar);
-        searchIconRes = array.getResourceId(R.styleable.MaterialSearchBar_searchIconDrawable, -1);
+        searchIconResId = array.getResourceId(R.styleable.MaterialSearchBar_searchIconDrawable, -1);
+        activeIconResId = array.getResourceId(R.styleable.MaterialSearchBar_activeIconDrawable, -1);
         startingHint = array.getString(R.styleable.MaterialSearchBar_startingHint);
         activeHint = array.getString(R.styleable.MaterialSearchBar_activeHint);
         maxSuggestionCount = array.getInt(R.styleable.MaterialSearchBar_maxSuggestionsCount, 3);
@@ -113,15 +114,18 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
 
         startContainer = findViewById(R.id.start_container);
         tvStartHint = (TextView) findViewById(R.id.tv_start_hint);
-        searchIcon = (ImageView) findViewById(R.id.mt_search);
-        arrowIcon = (ImageView) findViewById(R.id.mt_arrow);
+        startingIcon = (ImageView) findViewById(R.id.mt_starting_icon);
+        activeIcon = (ImageView) findViewById(R.id.mt_activated_icon);
+
+
+
         searchEdit = (EditText) findViewById(R.id.mt_editText);
         inputContainer = (LinearLayout) findViewById(R.id.inputContainer);
         clearIcon = findViewById(R.id.mt_clear);
 
         setOnClickListener(this);
-        arrowIcon.setOnClickListener(this);
-        searchIcon.setOnClickListener(this);
+        activeIcon.setOnClickListener(this);
+        startingIcon.setOnClickListener(this);
         searchEdit.setOnFocusChangeListener(this);
         searchEdit.setOnEditorActionListener(this);
         searchEdit.addTextChangedListener(this);
@@ -132,8 +136,19 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
 
 
     void postSetup() {
-        if (searchIconRes < 0)
-            searchIconRes = R.drawable.ic_magnify_black_48dp;
+
+        if (searchIconResId < 0) {
+            searchIconResId = R.drawable.ic_magnify_black_48dp;
+        }
+
+        setStartingIcon(searchIconResId);
+
+        if (activeIconResId < 0) {
+            activeIconResId = R.drawable.ic_back_green;
+        }
+
+        setActiveIcon(activeIconResId);
+
         setSpeechMode(speechMode);
 
         if (activeHint != null)
@@ -142,6 +157,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         if (tvStartHint != null) {
             tvStartHint.setText(startingHint);
         }
+
         setupTextColors();
 
         if (lockedMode) {
@@ -233,9 +249,19 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
      *
      * @param searchIconResId icon resource id
      */
-    public void setSearchIcon(int searchIconResId) {
-        this.searchIconRes = searchIconResId;
-        this.searchIcon.setImageResource(searchIconResId);
+    public void setStartingIcon(int searchIconResId) {
+        this.searchIconResId = searchIconResId;
+        this.startingIcon.setImageResource(searchIconResId);
+    }
+
+    /**
+     * Set search icon drawable resource
+     *
+     * @param activeIconResId icon resource id
+     */
+    public void setActiveIcon(int activeIconResId) {
+        this.activeIconResId = activeIconResId;
+        this.activeIcon.setImageResource(this.activeIconResId);
     }
 
     /**
@@ -278,11 +304,11 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     public void setSpeechMode(boolean speechMode) {
         this.speechMode = speechMode;
         if (speechMode) {
-            searchIcon.setImageResource(R.drawable.ic_microphone_black_48dp);
-            searchIcon.setClickable(true);
+            startingIcon.setImageResource(R.drawable.ic_microphone_black_48dp);
+            startingIcon.setClickable(true);
         } else {
-            searchIcon.setImageResource(searchIconRes);
-            searchIcon.setClickable(false);
+            startingIcon.setImageResource(searchIconResId);
+            startingIcon.setClickable(false);
         }
     }
 
@@ -391,7 +417,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
             if (!searchEnabled) {
                 enableSearch(true);
             }
-        } else if (id == R.id.mt_arrow) {
+        } else if (id == R.id.mt_activated_icon) {
             if (lockedMode) {
                 if (getContext() instanceof Activity) {
                     ((Activity) getContext()).onBackPressed();
@@ -399,7 +425,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
             } else {
                 disableSearch();
             }
-        } else if (id == R.id.mt_search) {
+        } else if (id == R.id.mt_starting_icon) {
             if (listenerExists())
                 onSearchActionListener.onButtonClicked(BUTTON_SPEECH);
         } else if (id == R.id.mt_clear) {
@@ -540,7 +566,8 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         savedState.isSearchBarVisible = searchEnabled ? VIEW_VISIBLE : VIEW_INVISIBLE;
         savedState.suggestionsVisible = suggestionsVisible ? VIEW_VISIBLE : VIEW_INVISIBLE;
         savedState.speechMode = speechMode ? VIEW_VISIBLE : VIEW_INVISIBLE;
-        savedState.searchIconRes = searchIconRes;
+        savedState.searchIconResId = searchIconResId;
+        savedState.activeIconResId = activeIconResId;
         savedState.suggestions = getLastSuggestions();
         savedState.maxSuggestions = maxSuggestionCount;
         if (activeHint != null) savedState.hint = activeHint.toString();
@@ -562,7 +589,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         }
 //        speechMode = savedState.speechMode == VIEW_VISIBLE;
 //        navIconResId = savedState.navIconResId;
-//        searchIconRes = savedState.searchIconRes;
+//        searchIconResId = savedState.searchIconResId;
 //        activeHint = savedState.activeHint;
 //        maxSuggestionCount = savedState.maxSuggestions > 0 ? maxSuggestionCount  = savedState.maxSuggestions : maxSuggestionCount;
 //        postSetup();
@@ -572,7 +599,8 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         private int isSearchBarVisible;
         private int suggestionsVisible;
         private int speechMode;
-        private int searchIconRes;
+        private int searchIconResId;
+        private int activeIconResId;
 
         private String hint;
         private List<String> suggestions;
@@ -585,7 +613,8 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
             out.writeInt(suggestionsVisible);
             out.writeInt(speechMode);
 
-            out.writeInt(searchIconRes);
+            out.writeInt(searchIconResId);
+            out.writeInt(activeIconResId);
 
             out.writeString(hint);
             out.writeList(suggestions);
@@ -598,7 +627,9 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
             suggestionsVisible = source.readInt();
             speechMode = source.readInt();
 
-            searchIconRes = source.readInt();
+            searchIconResId = source.readInt();
+            activeIconResId = source.readInt();
+
             hint = source.readString();
             suggestions = source.readArrayList(null);
             maxSuggestions = source.readInt();
