@@ -1,6 +1,5 @@
 package com.mancj.materialsearchbar;
 
-import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -9,15 +8,11 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -27,14 +22,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.List;
-
 /**
  * Created by mancj on 19.07.2016.
  */
-public class MaterialSearchBar extends RelativeLayout implements View.OnClickListener,
-        Animation.AnimationListener, SuggestionsAdapter.OnItemViewClickListener,
-        View.OnFocusChangeListener, TextView.OnEditorActionListener, TextWatcher {
+public class MaterialSearchBar
+        extends RelativeLayout
+        implements View.OnClickListener,
+        Animation.AnimationListener,
+        View.OnFocusChangeListener,
+        TextView.OnEditorActionListener,
+        TextWatcher {
+
     public static final int BUTTON_SPEECH = 1;
 
     private View startContainer;
@@ -48,16 +46,15 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
 
     private OnSearchActionListener onSearchActionListener;
     private boolean searchEnabled;
-    private boolean suggestionsVisible;
+
     public static final int VIEW_VISIBLE = 1;
     public static final int VIEW_INVISIBLE = 0;
-    private SuggestionsAdapter adapter;
+
     private float destiny;
 
     private int searchIconResId, activeIconResId;
 
     private CharSequence activeHint, startingHint;
-    private int maxSuggestionCount;
     private boolean speechMode;
 
     private int textColor;
@@ -88,7 +85,6 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         activeIconResId = array.getResourceId(R.styleable.MaterialSearchBar_activeIconDrawable, -1);
         startingHint = array.getString(R.styleable.MaterialSearchBar_startingHint);
         activeHint = array.getString(R.styleable.MaterialSearchBar_activeHint);
-        maxSuggestionCount = array.getInt(R.styleable.MaterialSearchBar_maxSuggestionsCount, 3);
         speechMode = array.getBoolean(R.styleable.MaterialSearchBar_speechMode, false);
         cardMode = array.getBoolean(R.styleable.MaterialSearchBar_cardMode, true);
         lockedMode = array.getBoolean(R.styleable.MaterialSearchBar_lockedMode, false);
@@ -104,20 +100,11 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         }
 
         destiny = getResources().getDisplayMetrics().density;
-        adapter = new SuggestionsAdapter(LayoutInflater.from(getContext()));
-        adapter.setListener(this);
-        adapter.maxSuggestionsCount = maxSuggestionCount;
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.mt_recycler);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
 
         startContainer = findViewById(R.id.start_container);
         tvStartHint = (TextView) findViewById(R.id.tv_start_hint);
         startingIcon = (ImageView) findViewById(R.id.mt_starting_icon);
         activeIcon = (ImageView) findViewById(R.id.mt_activated_icon);
-
-
 
         searchEdit = (EditText) findViewById(R.id.mt_editText);
         inputContainer = (LinearLayout) findViewById(R.id.inputContainer);
@@ -196,16 +183,15 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
 
         if (listenerExists())
             onSearchActionListener.onSearchStateChanged(false);
-        if (suggestionsVisible) animateLastRequests(getListHeight(false), 0);
+
     }
 
     /**
      * Shows search input and close arrow
      */
     public void enableSearch(boolean animate) {
-        adapter.notifyDataSetChanged();
-        searchEnabled = true;
 
+        searchEnabled = true;
         inputContainer.setVisibility(VISIBLE);
 
         if (animate) {
@@ -223,25 +209,6 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         }
 
         clearIcon.setVisibility(GONE);
-    }
-
-    private void animateLastRequests(int from, int to) {
-        suggestionsVisible = to > 0;
-        final RelativeLayout last = (RelativeLayout) findViewById(R.id.last);
-        final ViewGroup.LayoutParams lp = last.getLayoutParams();
-        if (to == 0 && lp.height == 0)
-            return;
-        ValueAnimator animator = ValueAnimator.ofInt(from, to);
-        animator.setDuration(200);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                lp.height = (int) animation.getAnimatedValue();
-                last.setLayoutParams(lp);
-            }
-        });
-        if (adapter.getItemCount() > 0)
-            animator.start();
     }
 
     /**
@@ -331,44 +298,6 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     }
 
     /**
-     * Specifies the maximum number of search queries stored until the activity is destroyed
-     *
-     * @param maxQuery maximum queries
-     */
-    public void setMaxSuggestionCount(int maxQuery) {
-        this.maxSuggestionCount = maxQuery;
-        adapter.maxSuggestionsCount = maxQuery;
-    }
-
-    /**
-     * Returns the last search queries.
-     * The queries are stored only for the duration of one activity session.
-     * When the activity is destroyed, the queries will be deleted.
-     * To save queries, use the method getLastSuggestions().
-     * To recover the queries use the method setLastSuggestions().
-     *
-     * @return array with the latest search queries
-     * @see #setLastSuggestions(List)
-     * @see #setMaxSuggestionCount(int)
-     */
-    public List<String> getLastSuggestions() {
-        return adapter.getSuggestions();
-    }
-
-    /**
-     * Sets the array of recent search queries.
-     * It is advisable to save the queries when the activity is destroyed
-     * and call this method when creating the activity.
-     *
-     * @param suggestions an array of queries
-     * @see #getLastSuggestions()
-     * @see #setMaxSuggestionCount(int)
-     */
-    public void setLastSuggestions(List<String> suggestions) {
-        adapter.setSuggestions(suggestions);
-    }
-
-    /**
      * Set search input text color
      *
      * @param textColor text color
@@ -446,7 +375,6 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         } else {
             startContainer.setVisibility(GONE);
             searchEdit.requestFocus();
-            animateLastRequests(0, getListHeight(false));
         }
     }
 
@@ -469,40 +397,8 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (listenerExists())
             onSearchActionListener.onSearchConfirmed(searchEdit.getText());
-        if (suggestionsVisible)
-            animateLastRequests(getListHeight(false), 0);
-        adapter.addSuggestion(searchEdit.getText().toString());
+
         return true;
-    }
-
-    /**
-     * For calculate the height change when item delete or add animation
-     * false is retrurn the full height of item,
-     * true is return the height of postion subtraction one
-     *
-     * @param isSubtraction
-     */
-    private int getListHeight(boolean isSubtraction) {
-        if (!isSubtraction)
-            return (int) ((adapter.getItemCount() * 50) * destiny);
-        return (int) (((adapter.getItemCount() - 1) * 50) * destiny);
-    }
-
-    @Override
-    public void OnItemClickListener(int position, View v) {
-        if (v.getTag() instanceof String) {
-            searchEdit.setText((String) v.getTag());
-        }
-    }
-
-    @Override
-    public void OnItemDeleteListener(int position, View v) {
-        if (v.getTag() instanceof String) {
-            /*Order of two line should't be change,
-            because sholud calculate the height of item first*/
-            animateLastRequests(getListHeight(false), getListHeight(true));
-            adapter.deleteSuggestion(position, (String) v.getTag());
-        }
     }
 
     @Override
@@ -519,10 +415,8 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
 
             if (s.length() > 0) {
                 clearIcon.setVisibility(VISIBLE);
-                animateLastRequests(getListHeight(false), 0);
             } else {
                 clearIcon.setVisibility(GONE);
-                animateLastRequests(0, getListHeight(false));
             }
         }
     }
@@ -564,12 +458,9 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     protected Parcelable onSaveInstanceState() {
         SavedState savedState = new SavedState(super.onSaveInstanceState());
         savedState.isSearchBarVisible = searchEnabled ? VIEW_VISIBLE : VIEW_INVISIBLE;
-        savedState.suggestionsVisible = suggestionsVisible ? VIEW_VISIBLE : VIEW_INVISIBLE;
         savedState.speechMode = speechMode ? VIEW_VISIBLE : VIEW_INVISIBLE;
         savedState.searchIconResId = searchIconResId;
         savedState.activeIconResId = activeIconResId;
-        savedState.suggestions = getLastSuggestions();
-        savedState.maxSuggestions = maxSuggestionCount;
         if (activeHint != null) savedState.hint = activeHint.toString();
         return savedState;
     }
@@ -579,10 +470,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         SavedState savedState = (SavedState) state;
         super.onRestoreInstanceState(savedState.getSuperState());
         searchEnabled = savedState.isSearchBarVisible == VIEW_VISIBLE;
-        suggestionsVisible = savedState.suggestionsVisible == VIEW_VISIBLE;
-        setLastSuggestions(savedState.suggestions);
-        if (suggestionsVisible)
-            animateLastRequests(0, getListHeight(false));
+
         if (searchEnabled) {
             inputContainer.setVisibility(VISIBLE);
             startContainer.setVisibility(GONE);
@@ -597,42 +485,30 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
 
     private static class SavedState extends BaseSavedState {
         private int isSearchBarVisible;
-        private int suggestionsVisible;
         private int speechMode;
         private int searchIconResId;
         private int activeIconResId;
 
         private String hint;
-        private List<String> suggestions;
-        private int maxSuggestions;
+
 
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
             out.writeInt(isSearchBarVisible);
-            out.writeInt(suggestionsVisible);
             out.writeInt(speechMode);
-
             out.writeInt(searchIconResId);
             out.writeInt(activeIconResId);
-
             out.writeString(hint);
-            out.writeList(suggestions);
-            out.writeInt(maxSuggestions);
         }
 
         public SavedState(Parcel source) {
             super(source);
             isSearchBarVisible = source.readInt();
-            suggestionsVisible = source.readInt();
             speechMode = source.readInt();
-
             searchIconResId = source.readInt();
             activeIconResId = source.readInt();
-
             hint = source.readString();
-            suggestions = source.readArrayList(null);
-            maxSuggestions = source.readInt();
         }
 
         public SavedState(Parcelable superState) {
@@ -655,7 +531,6 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && searchEnabled && !lockedMode) {
-            animateLastRequests(getListHeight(false), 0);
             disableSearch();
             return true;
         }

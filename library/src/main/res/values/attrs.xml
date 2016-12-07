@@ -5,7 +5,6 @@
         <attr name="activeIconDrawable" format="reference" />
         <attr name="startingHint" format="string" />
         <attr name="activeHint" format="string" />
-        <attr name="maxSuggestionsCount" format="string" />
         <attr name="speechMode" format="boolean" />
         <attr name="hintColor" format="color" />
         <attr name="textColor" format="color" />
