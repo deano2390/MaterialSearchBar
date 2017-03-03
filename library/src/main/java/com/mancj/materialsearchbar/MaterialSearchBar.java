@@ -58,6 +58,7 @@ public class MaterialSearchBar
     private boolean speechMode;
 
     private int textColor;
+
     private int hintColor;
     private boolean cardMode;
     private boolean lockedMode;
@@ -535,5 +536,9 @@ public class MaterialSearchBar
             return true;
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    public EditText getSearchEdit() {
+        return searchEdit;
     }
 }
